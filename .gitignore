@@ -25,3 +25,6 @@ __pycache__/
 
 # Documentation site (separate repository)
 sitmun.github.io/
+
+# Harness Engineering (local orchestration state)
+.sitmun-harness/

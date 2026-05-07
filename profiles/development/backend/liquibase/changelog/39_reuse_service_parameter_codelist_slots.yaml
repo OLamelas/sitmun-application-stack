@@ -7,7 +7,7 @@
 # (no duplicate SQL here). Skips when seed already matches (COD_ID 47 != INFO).
 databaseChangeLog:
   - changeSet:
-      id: 39
+      id: 39_reuse_service_parameter_codelist_slots
       author: sitmun
       context: dev,prod
       preConditions:

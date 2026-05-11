@@ -1,0 +1,109 @@
+databaseChangeLog:
+  - changeSet:
+      id: 45
+      author: sitmun
+      context: dev
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO STM_TASK (TAS_ID, TAS_NAME, TAS_CREATED, TAS_ORDER, TAS_GIID, TAS_SERID, TAS_GTASKID, TAS_TTASKID, TAS_TUIID, TAS_CONNID, TAS_PARAMS)
+              SELECT 32306, 'More Info Advanced', TIMESTAMP '2026-05-04 18:38:16.076', NULL, NULL, NULL, 1, 1, TUI_ID, NULL, '{"parameters":[]}'
+              FROM STM_TSK_UI
+              WHERE TUI_NAME = 'sitna.moreInfoAdvanced'
+                AND NOT EXISTS (SELECT 1 FROM STM_TASK WHERE TAS_ID = 32306)
+                AND NOT EXISTS (
+                  SELECT 1
+                  FROM STM_TASK
+                  JOIN STM_TSK_UI ON TAS_TUIID = TUI_ID
+                  WHERE TAS_NAME = 'More Info Advanced'
+                    AND TAS_TTASKID = 1
+                    AND TUI_NAME = 'sitna.moreInfoAdvanced'
+                );
+        - sql:
+            sql: >
+              UPDATE STM_SEQUENCE
+              SET SEQ_COUNT = CASE WHEN SEQ_COUNT < 32307 THEN 32307 ELSE SEQ_COUNT END
+              WHERE SEQ_NAME = 'TAS_ID';
+        - sql:
+            sql: >
+              INSERT INTO STM_ROL_TSK (RTS_TASKID, RTS_ROLEID)
+              SELECT task.TAS_ID, role.ROL_ID
+              FROM STM_TASK task
+              JOIN STM_TSK_UI ui ON task.TAS_TUIID = ui.TUI_ID
+              CROSS JOIN STM_ROLE role
+              WHERE task.TAS_ID = 32306
+                AND task.TAS_NAME = 'More Info Advanced'
+                AND task.TAS_TTASKID = 1
+                AND ui.TUI_NAME = 'sitna.moreInfoAdvanced'
+                AND role.ROL_ID IN (1, 180, 181)
+                AND NOT EXISTS (
+                  SELECT 1
+                  FROM STM_ROL_TSK
+                  WHERE RTS_TASKID = task.TAS_ID
+                    AND RTS_ROLEID = role.ROL_ID
+                );
+        - sql:
+            sql: >
+              INSERT INTO STM_AVAIL_TSK (ATS_ID, ATS_CREATED, ATS_TASKID, ATS_TERID)
+              SELECT (SELECT COALESCE(MAX(ATS_ID), 0) FROM STM_AVAIL_TSK) + ROW_NUMBER() OVER (ORDER BY TER_ID),
+                     TIMESTAMP '2026-05-04 18:38:16.076',
+                     task.TAS_ID,
+                     territory.TER_ID
+              FROM STM_TASK task
+              JOIN STM_TSK_UI ui ON task.TAS_TUIID = ui.TUI_ID
+              CROSS JOIN STM_TERRITORY territory
+              WHERE task.TAS_ID = 32306
+                AND task.TAS_NAME = 'More Info Advanced'
+                AND task.TAS_TTASKID = 1
+                AND ui.TUI_NAME = 'sitna.moreInfoAdvanced'
+                AND NOT EXISTS (
+                SELECT 1
+                FROM STM_AVAIL_TSK
+                WHERE ATS_TASKID = task.TAS_ID
+                  AND ATS_TERID = territory.TER_ID
+              );
+        - sql:
+            sql: >
+              UPDATE STM_SEQUENCE
+              SET SEQ_COUNT = (SELECT COALESCE(MAX(ATS_ID), 0) + 1 FROM STM_AVAIL_TSK)
+              WHERE SEQ_NAME = 'ATS_ID'
+                AND SEQ_COUNT < (SELECT COALESCE(MAX(ATS_ID), 0) + 1 FROM STM_AVAIL_TSK);
+      rollback:
+        - sql:
+            sql: >
+              DELETE FROM STM_AVAIL_TSK
+              WHERE ATS_TASKID = 32306
+                AND EXISTS (
+                  SELECT 1
+                  FROM STM_TASK task
+                  JOIN STM_TSK_UI ui ON task.TAS_TUIID = ui.TUI_ID
+                  WHERE task.TAS_ID = 32306
+                    AND task.TAS_NAME = 'More Info Advanced'
+                    AND task.TAS_TTASKID = 1
+                    AND ui.TUI_NAME = 'sitna.moreInfoAdvanced'
+                );
+        - sql:
+            sql: >
+              DELETE FROM STM_ROL_TSK
+              WHERE RTS_TASKID = 32306
+                AND EXISTS (
+                  SELECT 1
+                  FROM STM_TASK task
+                  JOIN STM_TSK_UI ui ON task.TAS_TUIID = ui.TUI_ID
+                  WHERE task.TAS_ID = 32306
+                    AND task.TAS_NAME = 'More Info Advanced'
+                    AND task.TAS_TTASKID = 1
+                    AND ui.TUI_NAME = 'sitna.moreInfoAdvanced'
+                );
+        - sql:
+            sql: >
+              DELETE FROM STM_TASK
+              WHERE TAS_ID = 32306
+                AND TAS_NAME = 'More Info Advanced'
+                AND TAS_TTASKID = 1
+                AND EXISTS (
+                  SELECT 1
+                  FROM STM_TSK_UI
+                  WHERE TUI_ID = TAS_TUIID
+                    AND TUI_NAME = 'sitna.moreInfoAdvanced'
+                );

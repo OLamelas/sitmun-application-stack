@@ -161,7 +161,6 @@ Rules encoded in DTOs:
   - `parameters`
   - `resultType`
   - `rows` or `resourceUrl`
-  - `flattenedContextKeys`
 
 **Step 4: Run DTO test again**
 

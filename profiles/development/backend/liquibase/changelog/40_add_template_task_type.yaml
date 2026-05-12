@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 40
+      id: 40_template_task_type
       author: sitmun
       context: dev,prod
       preConditions:
@@ -29,7 +29,7 @@ databaseChangeLog:
             tableName: STM_TSK_TYP
             where: TTY_ID = 15
   - changeSet:
-      id: 40b
+      id: 40b_template_task_type_seq
       author: sitmun
       context: dev,prod
       changes:

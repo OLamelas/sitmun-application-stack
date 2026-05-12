@@ -426,6 +426,14 @@
           "cod_description": "Web API Query"
         },
         {
+          "cod_id": 126,
+          "cod_list": "queryTask.scope",
+          "cod_value": "web-api-query-no-proxy",
+          "cod_system": true,
+          "cod_default": false,
+          "cod_description": "Web API Query (No Proxy)"
+        },
+        {
           "cod_id": 53,
           "cod_list": "service.authenticationMode",
           "cod_value": "None",
@@ -448,6 +456,30 @@
           "cod_system": true,
           "cod_default": false,
           "cod_description": "API Key"
+        },
+        {
+          "cod_id": 123,
+          "cod_list": "apiKey.header",
+          "cod_value": "X-API-Key",
+          "cod_system": true,
+          "cod_default": true,
+          "cod_description": "X-API-Key"
+        },
+        {
+          "cod_id": 124,
+          "cod_list": "apiKey.cookie",
+          "cod_value": "X-API-Key",
+          "cod_system": true,
+          "cod_default": true,
+          "cod_description": "X-API-Key"
+        },
+        {
+          "cod_id": 125,
+          "cod_list": "apiKey.queryParam",
+          "cod_value": "API-Key",
+          "cod_system": true,
+          "cod_default": true,
+          "cod_description": "API-Key"
         },
         {
           "cod_id": 55,
@@ -772,18 +804,10 @@
         {
           "cod_id": 103,
           "cod_list": "queryTask.scope",
-          "cod_value": "URL",
+          "cod_value": "external-link",
           "cod_system": true,
           "cod_default": false,
-          "cod_description": "URL Query"
-        },
-        {
-          "cod_id": 104,
-          "cod_list": "queryTask.scope",
-          "cod_value": "resource",
-          "cod_system": true,
-          "cod_default": false,
-          "cod_description": "Resource"
+          "cod_description": "External link"
         },
         {
           "cod_id": 105,
@@ -1641,7 +1665,7 @@
         },
         {
           "tui_id": 31,
-          "tui_name": "sitna.moreInfo",
+          "tui_name": "sitmun.moreInfo",
           "tui_tooltip": "More Info",
           "tui_order": 0,
           "tui_type": "moreInfo"

@@ -1,16 +1,16 @@
 [submodule "sitmun-admin-app"]
 	path = front/admin/sitmun-admin-app
-	url = https://github.com/sitmun/sitmun-admin-app.git
+	url = https://github.com/OLamelas/sitmun-admin-app.git
 	branch = .
 [submodule "sitmun-viewer-app"]
 	path = front/viewer/sitmun-viewer-app
-	url = https://github.com/sitmun/sitmun-viewer-app.git
+	url = https://github.com/OLamelas/sitmun-viewer-app.git
 	branch = .
 [submodule "sitmun-backend-core"]
 	path = back/backend/sitmun-backend-core
-	url = https://github.com/sitmun/sitmun-backend-core.git
+	url = https://github.com/OLamelas/sitmun-backend-core.git
 	branch = .
 [submodule "sitmun-proxy-middleware"]
 	path = back/proxy/sitmun-proxy-middleware
-	url = https://github.com/sitmun/sitmun-proxy-middleware.git
+	url = https://github.com/OLamelas/sitmun-proxy-middleware.git
 	branch = .

@@ -18,6 +18,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: process.env.SITMUN_E2E_VIDEO === '1' ? 'on' : 'retain-on-failure',
+    // Password/catalog/proxy flows need the viewer SW for middleware + proxy_token.
     serviceWorkers: 'allow',
   },
   webServer: [
@@ -46,7 +47,7 @@ export default defineConfig({
     {
       command: 'npm run e2e:viewer:app',
       url: 'http://localhost:4400',
-      timeout: 180_000,
+      timeout: 420_000,
       reuseExistingServer: false,
       gracefulShutdown: { signal: 'SIGTERM', timeout: 10_000 },
     },
@@ -61,7 +62,12 @@ export default defineConfig({
       name: 'viewer-public',
       testMatch: /(public-access|language-chrome)\.spec\.ts/,
       dependencies: ['viewer-setup'],
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // Public SPA routes only: a stale SW can serve Not found for /auth/login.
+        // Cache-Control no-store on HTML (viewer serve-e2e) is the other half.
+        serviceWorkers: 'block',
+      },
     },
     {
       name: 'viewer-password',

@@ -55,6 +55,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 #### Stack-level
 
+- **Toolchain**: Submodule gitlinks point at Spring Boot `4.1.1` (shared, backend, proxy, mbtiles), Angular `22.2.3` / Node `24.22.0` (admin, viewer), and Gradle `8.14.6`. Root image and CI use Node `24.22.0`; mobile Android E2E stays on Node `22`. Published shared coordinate remains `1.2.9`.
 - **Viewer**: The stack points at viewer `dev`, which replaces filler control-spec expects, deletes the unused control loader, drops three local `any` casts, and removes comments that name the wrong type or narrate the next line ([sitmun-viewer-app#199](https://github.com/sitmun/sitmun-viewer-app/pull/199), [#200](https://github.com/sitmun/sitmun-viewer-app/pull/200), [#201](https://github.com/sitmun/sitmun-viewer-app/pull/201), [#202](https://github.com/sitmun/sitmun-viewer-app/pull/202), [#203](https://github.com/sitmun/sitmun-viewer-app/pull/203)).
 - **Admin**: The stack points at admin `dev`, including the service-access clock and the cleanup that replaces filler expects, deletes unused task fields, corrects comments, drops local `any` casts, and removes narrating comments ([sitmun-admin-app#475](https://github.com/sitmun/sitmun-admin-app/pull/475), [#476](https://github.com/sitmun/sitmun-admin-app/pull/476), [#477](https://github.com/sitmun/sitmun-admin-app/pull/477), [#478](https://github.com/sitmun/sitmun-admin-app/pull/478), [#479](https://github.com/sitmun/sitmun-admin-app/pull/479), [#480](https://github.com/sitmun/sitmun-admin-app/pull/480)).
 - **Backend**: The stack points at backend `dev`. CI publishes `sitmun-shared` before the build. An LDAP login fails when the role lookup throws. Cleanup replaces filler expects, deletes unused symbols, and removes comments that name the wrong type or narrate the next line ([sitmun-backend-core#274](https://github.com/sitmun/sitmun-backend-core/pull/274), [#275](https://github.com/sitmun/sitmun-backend-core/pull/275), [#276](https://github.com/sitmun/sitmun-backend-core/pull/276), [#277](https://github.com/sitmun/sitmun-backend-core/pull/277), [#278](https://github.com/sitmun/sitmun-backend-core/pull/278), [#279](https://github.com/sitmun/sitmun-backend-core/pull/279), [#280](https://github.com/sitmun/sitmun-backend-core/pull/280), [#281](https://github.com/sitmun/sitmun-backend-core/pull/281)).
@@ -72,8 +73,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **Map**: A long Available Layers name stays on one line, shortened with an ellipsis, and the metadata button stays visible. A folder's children start on the next line, including a one-letter name ([sitmun-viewer-app#186](https://github.com/sitmun/sitmun-viewer-app/issues/186)).
 
+#### Proxy Middleware
+
+- **WFS**: The stack points at proxy `dev`, which leaves GeoServer `text/xml; subtype=gml/2.1.2` on the response. Spring reads `text/xml` and any parameter it can parse ([sitmun-proxy-middleware#28](https://github.com/sitmun/sitmun-proxy-middleware/pull/28)).
+
 #### Stack-level
 
+- **Docker**: `docker compose build front` uses the Angular 22 viewer webpack config. `envsubst` replaces only `PUBLIC_BASE_PATH`, so the viewer image build keeps the `jszip`, `util`, and `@spz-loader` exclusions.
 - **Docker**: `sitmun-shared` checks out `gradlew` with LF line endings. On Windows with `core.autocrlf=true`, the backend and proxy image builds failed in `publishToMavenLocal` with `/bin/sh^M: bad interpreter` (exit code 126) ([#89](https://github.com/sitmun/sitmun-application-stack/issues/89)).
 - **E2E**: Each root E2E job publishes the pinned `sitmun-shared` to the local Maven repository before the suite starts. The backend resolves `sitmun-spring-upstream` and `sitmun-proxy-contract` `1.2.9` from that repository.
 - **Submodules**: `sitmun-mbtiles` follows the stack branch. `git submodule update --remote` on stack `dev` stays on mbtiles `dev`, the commit the stack already pins.

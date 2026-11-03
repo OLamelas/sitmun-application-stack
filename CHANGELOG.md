@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 #### Backend Core
 
+- **Cartography**: The cartography view includes `serviceType` from the linked service ([sitmun-admin-app#498](https://github.com/sitmun/sitmun-admin-app/issues/498)).
+- **Code lists**: `cartographyParameter.geometryKind` and `cartographyParameter.preferredGeometryType` store English descriptions. Spanish, Catalan, Aranese, and French labels, including format `Geometry`, come from `STM_TRANSLATION`.
+- **Profile**: A vector layer publishes `geometryName` and, when the attribute is generic Geometry, `preferredGeometryType`. `kind` is `vector` for WFS and `raster` for WMS and WMTS ([sitmun-admin-app#499](https://github.com/sitmun/sitmun-admin-app/issues/499)).
 - **Proxy**: `INFO` parameters are sent only on GetFeatureInfo. `GETMAP` parameters are sent only on GetMap. `WMS` and `WFS` parameters stay on every operation of that protocol. `WMTS` and `OLPARAM` parameters are not sent upstream. A code must be allowed for the service protocol.
 - **Proxy**: A proxied layer is requested at `/proxy/{app}/{ter}/{type}/{serviceId}/{cartographyId}`. Its fixed parameters replace the service parameters of the same name when both apply to that request. The service path refuses a map, feature, or describe request when one of those layers has parameters ([#90](https://github.com/sitmun/sitmun-application-stack/issues/90)).
 - **Map**: `POST /api/config/client/short-url` shortens a viewer map URL when the caller can open that application and territory. A public visitor with no cookie is allowed. `sitmun.short-url.provider` defaults to `none`. A provider I/O failure returns `Short URL provider failed` ([sitmun-backend-core#272](https://github.com/sitmun/sitmun-backend-core/issues/272)).
@@ -17,12 +20,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 #### Admin Application
 
+- **Layers**: The layers list and the layer form show the linked service protocol beside the service. The value is the service type and stays off the stored cartography type ([sitmun-admin-app#498](https://github.com/sitmun/sitmun-admin-app/issues/498)).
+- **Layers**: Seeding feature information adds geometry properties on the same parameter list. Format stays `Geometry`. A preferred type is edited only for generic Geometry ([sitmun-admin-app#499](https://github.com/sitmun/sitmun-admin-app/issues/499)).
 - **Services**: The parameter type list follows the service protocol. `INFO` is GetFeatureInfo, `GETMAP` is GetMap, and `WMTS` stays a viewer tile setting. The parameters tab says those scopes reach the upstream service only when the service is proxied.
 - **Layers**: The layer form can edit fixed service parameters when the service is proxied (`LAYERS_SERVICE_PARAMETERS_FEATURE`) ([#90](https://github.com/sitmun/sitmun-application-stack/issues/90)).
 - **Layers**: The feature-information field grid is on the cartography form without the experimental query-layer flag. Labels translate per parameter. `N` and `P` edit fraction digits and padding. `F` chooses date or date and time. A WFS DescribeFeatureType request seeds top-level element names ([sitmun-admin-app#469](https://github.com/sitmun/sitmun-admin-app/pull/469), [#77](https://github.com/sitmun/sitmun-application-stack/issues/77)).
 
 #### Viewer Application
 
+- **Map**: Adding a WFS layer passes `geometryName` when the profile publishes one, and passes `geometryType` only when the profile publishes `preferredGeometryType`. The identify table skips a field whose format is `Geometry` ([sitmun-admin-app#499](https://github.com/sitmun/sitmun-admin-app/issues/499)).
 - **Map**: A proxied layer uses its own proxy address from the profile ([#90](https://github.com/sitmun/sitmun-application-stack/issues/90)).
 - **Map**: A share link keeps the current map route and stores the view in `mapState`. Opening that link restores the extent, a non-default background, catalog layers that were turned on, reordered, or changed (including their opacity, sublayers, stacking order, and the selected layer of a radio group), drawings, an imported file, a shared feature, and the 3D camera. A missing background, layer, drawing, or file does not stop the rest of the restore. The browser does not call tinyurl.com. A failed shorten shows a map-language message ([sitmun-viewer-app#189](https://github.com/sitmun/sitmun-viewer-app/issues/189)).
 - **Map**: A non-empty field list replaces the full GetFeatureInfo property table, in order, with the translated label. `T`, `N`, `F`, `U`, `P`, and `I` follow the map locale. `AUTO` keeps API-SITNA detection. `feature.data` is not rewritten ([sitmun-viewer-app#179](https://github.com/sitmun/sitmun-viewer-app/pull/179), [#77](https://github.com/sitmun/sitmun-application-stack/issues/77)).
@@ -38,11 +44,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 #### Stack
 
+- **CI**: `.github/workflows/liquibase-upgrade.yml` job `dev-postgres-from` upgrades the development profile on PostgreSQL from 1.2.6 to HEAD (`--contexts=dev`).
 - **Submodules**: The shared upstream library is checked out at `back/shared/sitmun-shared` ([sitmun-shared](https://github.com/sitmun/sitmun-shared)). It follows the stack branch. `tools/scripts/bump-version.sh` moves its `1.2.9` version with the backend dependency `org.sitmun:sitmun-spring-upstream`.
 - **Development**: `profiles/development-lvh.env` announces the stack as `http://lvh.me:9000`. The air-gapped default stays `localhost`.
 
 #### Profile-level
 
+- **Liquibase**: Development changelog 88, and PostgreSQL and Oracle changelog 32, add the geometry code lists and format `Geometry`.
 - **Liquibase**: Development changelog 81 creates `STM_PAR_GS` and the `cartographyServiceParameter.type` codes so a local Docker database can store layer service parameters ([#90](https://github.com/sitmun/sitmun-application-stack/issues/90)).
 - **Liquibase**: Development changelog 78 sets a description, a metadata URL, and a dataset URL on folder Adreces (tree node 12339) in Visor IDEBarcelona. Gestió municipal (node 12338) stays empty ([sitmun-viewer-app#173](https://github.com/sitmun/sitmun-viewer-app/issues/173)).
 - **Liquibase**: Development changelog 79 moves IDE Menorca folder download zips from `TNO_METAURL` to `TNO_DATAURL` and clears the metadata URL. Those zip names have no GeoNetwork record, so the catalog window shows the file under download data.
@@ -71,6 +79,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 #### Viewer Application
 
+- **About**: The About window shows the installed API SITNA and OpenLayers versions. The Docker production template no longer hardcodes `sitnaVersion` ([sitmun-viewer-app#218](https://github.com/sitmun/sitmun-viewer-app/issues/218), [sitmun-viewer-app#219](https://github.com/sitmun/sitmun-viewer-app/pull/219)).
 - **Map**: A long Available Layers name stays on one line, shortened with an ellipsis, and the metadata button stays visible. A folder's children start on the next line, including a one-letter name ([sitmun-viewer-app#186](https://github.com/sitmun/sitmun-viewer-app/issues/186)).
 
 #### Proxy Middleware
@@ -79,12 +88,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 #### Stack-level
 
+- **Setup**: `setup.sh` and `setup.ps1` append `SITMUN_USER_SECRET`, `MIDDLEWARE_SECRET`, and `SITMUN_MBTILES_JOB_HANDLE_SECRET` when `.env` already exists and a key is absent. An existing value is kept. Windows setup uses `RandomNumberGenerator` and does not call `openssl` ([#138](https://github.com/sitmun/sitmun-application-stack/issues/138)).
+- **Docker**: Each `profiles/*.env` template names `SITMUN_USER_SECRET`, `MIDDLEWARE_SECRET`, and `SITMUN_MBTILES_JOB_HANDLE_SECRET` and leaves them unset. Copying a profile to `.env` still requires generated values before Compose will start ([#134](https://github.com/sitmun/sitmun-application-stack/issues/134)).
+- **Liquibase**: `service.type` is limited to `WMS`, `WFS`, and `WMTS` on the development, postgres, and oracle profiles. A stored service of another type is not deleted ([#101](https://github.com/sitmun/sitmun-application-stack/issues/101)).
 - **Docker**: `docker compose build front` uses the Angular 22 viewer webpack config. `envsubst` replaces only `PUBLIC_BASE_PATH`, so the viewer image build keeps the `jszip`, `util`, and `@spz-loader` exclusions.
+- **Docker**: The root `.dockerignore` excludes `node_modules/` and `**/node_modules/`. The front image build context is the repository root, so `front/.dockerignore` does not apply ([#114](https://github.com/sitmun/sitmun-application-stack/issues/114)).
 - **Docker**: `sitmun-shared` checks out `gradlew` with LF line endings. On Windows with `core.autocrlf=true`, the backend and proxy image builds failed in `publishToMavenLocal` with `/bin/sh^M: bad interpreter` (exit code 126) ([#89](https://github.com/sitmun/sitmun-application-stack/issues/89)).
 - **E2E**: Each root E2E job publishes the pinned `sitmun-shared` to the local Maven repository before the suite starts. The backend resolves `sitmun-spring-upstream` and `sitmun-proxy-contract` `1.2.9` from that repository.
 - **Submodules**: `sitmun-mbtiles` follows the stack branch. `git submodule update --remote` on stack `dev` stays on mbtiles `dev`, the commit the stack already pins.
 - **Liquibase (Oracle)**: `changelog/26_map_image_task_type_pre23.yaml` takes changelog 22's slot in `profiles/oracle/liquibase/master.xml`. Changeset `22c_document_export_codelists` used `SELECT` without `FROM` and SQL `TRUE` literals, both 23ai-only, so install and upgrade failed on 19c with `ORA-00923` ([#74](https://github.com/sitmun/sitmun-application-stack/issues/74)). Changelog 22 stays byte-identical and unreferenced; its `DATABASECHANGELOG` rows remain on databases that applied it, and 26 is guarded so those databases converge without duplicate rows.
 - **Liquibase tests**: `test_liquibase_1.2.7_to_head_upgrade.sh` honours `SITMUN_ORACLE_IMAGE` and `SITMUN_ORACLE_WAIT_TRIES`. CI job `oracle-pre23-from` runs the Oracle 1.2.7 → HEAD upgrade on `gvenzl/oracle-xe:21-slim` ([#74](https://github.com/sitmun/sitmun-application-stack/issues/74)).
+
+#### Profile-level
+
+- **Liquibase**: Development changelog 89, and PostgreSQL and Oracle changelog 33, alter `STM_SERVICE_CHECK.SEC_OBSERVED` and `STM_SERVICE_CHECK_SAMPLE.SCS_OBSERVED` to `TIMESTAMP(6) WITH TIME ZONE` on Oracle ([sitmun-admin-app#516](https://github.com/sitmun/sitmun-admin-app/issues/516)).
+- **Liquibase**: Development changelog 91, and PostgreSQL and Oracle changelog 35, copy populated `SEC_OBSERVED` and `SCS_OBSERVED` values as UTC before that `ALTER`. The `ALTER` changesets are unchanged ([#135](https://github.com/sitmun/sitmun-application-stack/issues/135)).
+
+### Security
+
+#### Stack-level
+
+- **Docker**: Root Compose refuses to start when `SITMUN_USER_SECRET`, `MIDDLEWARE_SECRET`, or `SITMUN_MBTILES_JOB_HANDLE_SECRET` is unset. `setup.sh` and `setup.ps1` generate the three values into a new `.env` when those keys are absent. Profile files do not store them ([#113](https://github.com/sitmun/sitmun-application-stack/issues/113)).
+
+### Removed
+
+#### Stack-level
+
+- **Docker**: `profiles/postgres/docker-compose.yml` and `profiles/oracle/docker-compose.yml` are removed. PostgreSQL and Oracle start from the root Compose file after copying `profiles/postgres.env` or `profiles/oracle.env` to `.env` ([#110](https://github.com/sitmun/sitmun-application-stack/issues/110)).
 
 ## [1.2.9] - 2026-09-19
 

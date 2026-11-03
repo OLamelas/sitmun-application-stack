@@ -71,13 +71,39 @@ function Update-FromRemote {
     }
 }
 
-# Copy default development profile to .env if .env does not exist
+function Add-ComposeSecretIfMissing {
+    param([string]$Key)
+    $present = $false
+    foreach ($line in Get-Content -Path ".env") {
+        if ($line -like "$Key=*") {
+            $present = $true
+            break
+        }
+    }
+    if (-not $present) {
+        $bytes = New-Object byte[] 32
+        $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+        try {
+            $rng.GetBytes($bytes)
+        } finally {
+            $rng.Dispose()
+        }
+        $hex = -join ($bytes | ForEach-Object { $_.ToString("x2") })
+        Add-Content -Path ".env" -Value "$Key=$hex"
+    }
+}
+
+# Create .env from the development PostgreSQL profile when it is absent.
+# Profile files do not store secrets. Append any of the three keys that are missing.
 function Copy-EnvFileIfMissing {
     if (-Not (Test-Path ".env")) {
         Write-Host "${Yellow}.env file is missing. Copying profiles/development-postgres.env to .env...${Reset}"
         Copy-Item -Path "profiles/development-postgres.env" -Destination ".env"
         Write-Host "${Green}.env file created from profiles/development-postgres.env.${Reset}"
     }
+    Add-ComposeSecretIfMissing -Key "SITMUN_USER_SECRET"
+    Add-ComposeSecretIfMissing -Key "MIDDLEWARE_SECRET"
+    Add-ComposeSecretIfMissing -Key "SITMUN_MBTILES_JOB_HANDLE_SECRET"
 }
 
 # Main logic

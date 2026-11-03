@@ -62,7 +62,7 @@ test.describe('Viewer MIA render', () => {
       miaTaskIds: [MIA_PARENT_TASK_ID],
     });
 
-    await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toBeVisible({
+    await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.locator('[data-e2e-mia="1"]')).toBeVisible({ timeout: 15_000 });
@@ -87,7 +87,7 @@ test.describe('Viewer MIA render', () => {
     };
     expect(json.tasks?.some((task) => task.taskId === MIA_PARENT_TASK_ID)).toBeTruthy();
 
-    await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toBeVisible({
+    await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.locator(`[data-mia-task-id="${MIA_PARENT_TASK_ID}"]`)).toBeVisible({
@@ -108,7 +108,7 @@ test.describe('Viewer MIA render', () => {
     await loadQueryableLeafIntoCapas(page);
     await simulateGetFeatureInfo(page);
 
-    await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toBeVisible({
+    await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.locator('.sitmun-mia-error')).toBeVisible({ timeout: 15_000 });
@@ -135,10 +135,10 @@ test.describe('Viewer MIA render', () => {
     await loadQueryableLeafIntoCapas(page);
     await simulateGetFeatureInfo(page);
 
-    const overlay = page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible');
+    const overlay = page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)');
     await expect(overlay).toBeVisible({ timeout: 15_000 });
-    await page.locator('.sitmun-mia-popup-close').click();
-    await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toHaveCount(0);
+    await page.locator('.sitmun-map-feature-panel-close').click();
+    await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toHaveCount(0);
   });
 
   test('re-renders MIA for FeatureInfo currentFeature among multi-feature GFI', async ({
@@ -239,15 +239,15 @@ test.describe('Viewer MIA render', () => {
     await simulateGetFeatureInfo(page, { id: 1, marker: 'late' });
     await expect.poll(() => deferreds.length).toBe(1);
 
-    const overlay = page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible');
+    const overlay = page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)');
     await expect(overlay).toBeVisible({ timeout: 15_000 });
-    await page.locator('.sitmun-mia-popup-close').click();
-    await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toHaveCount(
+    await page.locator('.sitmun-map-feature-panel-close').click();
+    await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toHaveCount(
       0,
     );
 
     deferreds[0].resolve(miaRenderTasksBody('late'));
-    await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toHaveCount(
+    await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toHaveCount(
       0,
     );
     await expect(page.locator('[data-e2e-mia-marker="late"]')).toHaveCount(0);

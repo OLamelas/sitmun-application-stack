@@ -89,7 +89,7 @@ test.describe('Map-click GetFeatureInfo → MIA overlay', () => {
       expect(json.tasks?.some((task) => task.taskId === MIA_PARENT_TASK_ID)).toBeTruthy();
 
       await expect(
-        viewer.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible'),
+        viewer.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)'),
       ).toBeVisible({ timeout: 15_000 });
     });
   });
@@ -102,7 +102,7 @@ test.describe('Map-click GetFeatureInfo → MIA overlay', () => {
       const renderResponse = await renderPromise;
       expect(renderResponse.status()).toBe(200);
       await expect(
-        viewer.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible'),
+        viewer.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)'),
       ).toBeVisible({ timeout: 15_000 });
     });
   });

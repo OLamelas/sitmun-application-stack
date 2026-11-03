@@ -36,13 +36,13 @@ export async function expectOverlayContains(
   page: Page,
   options: { miaName?: string; text: string | RegExp },
 ): Promise<void> {
-  await expect(page.locator('.sitmun-mia-popup-overlay.sitmun-mia-popup-visible')).toBeVisible({
+  await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toBeVisible({
     timeout: 15_000,
   });
   if (options.miaName) {
     await activateMiaTab(page, options.miaName);
   }
-  await expect(page.locator('.sitmun-mia-popup-overlay')).toContainText(options.text, {
+  await expect(page.locator('.sitmun-map-feature-panel:has(.sitmun-mia-popup-content)')).toContainText(options.text, {
     timeout: 15_000,
   });
 }

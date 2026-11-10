@@ -18,6 +18,7 @@ import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { handleWfsEditing } from '../e2e/viewer/fixtures/wfs-edit-stub.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const GFI_XML_PATH = join(__dirname, '../e2e/mia-cross/fixtures/gfi-34_TOPO_TX.xml');
@@ -296,6 +297,7 @@ function rememberQuery(url) {
 const server = createServer((req, res) => {
   const url = new URL(req.url ?? '/', `http://${HOST}:${PORT}`);
   const method = req.method ?? 'GET';
+  if (handleWfsEditing(req, res, url)) return;
 
   if (method === 'GET' && url.pathname === '/health') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });

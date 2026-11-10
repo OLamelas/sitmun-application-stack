@@ -54,6 +54,12 @@ export default defineConfig({
   ],
   projects: [
     {
+      name: 'viewer-wfs-edit',
+      testMatch: /wfs-edit-permissions\.spec\.ts/,
+      dependencies: ['viewer-setup'],
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
       name: 'viewer-setup',
       testMatch: /setup\/.*\.setup\.ts/,
       use: { ...devices['Desktop Chrome'] },
